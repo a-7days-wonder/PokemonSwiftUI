@@ -1,0 +1,20 @@
+name: PokemonSwiftUI
+
+options:
+  deploymentTarget:
+    iOS: 15.0
+  developmentLanguage: ja
+
+settings:
+  base:
+    MARKETING_VERSION: 1.0.0
+
+targets:
+  PokemonSwiftUI:
+    type: application
+    platform: iOS
+    sources: PokemonSwiftUI
+    settings:
+      base:
+        INFOPLIST_FILE: PokemonSwiftUI/Application/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.shumpei.nagata.PokemonSwiftUI
