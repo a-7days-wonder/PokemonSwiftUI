@@ -86,6 +86,7 @@
 				5E3619A026F782B000440CB2 /* Sources */,
 				5E3619A126F782B000440CB2 /* Frameworks */,
 				5E3619A226F782B000440CB2 /* Resources */,
+				5E3619B426F7852C00440CB2 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -142,6 +143,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		5E3619B426F7852C00440CB2 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/zsh;
+			shellScript = "source ~/.zshrc\n# NOTE: Apple Silicon Macでのインストール先なので、Intel Macだとダメかも\nif which /opt/homebrew/bin/mint > /dev/null; then\n  xcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint autocorrect --format\n  xcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint\nelse\n  echo \"warning: SwiftLint is not installed. Please install SwiftLint with Mint.\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5E3619A026F782B000440CB2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -162,7 +184,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "App/Preview\\ Content";
 				ENABLE_PREVIEWS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -197,7 +219,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "App/Preview\\ Content";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;

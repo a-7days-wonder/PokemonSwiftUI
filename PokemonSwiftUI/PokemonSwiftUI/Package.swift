@@ -10,7 +10,7 @@ let package = Package(
         .library(
             name: "AppRoot",
             targets: ["AppRoot"]
-        ),
+        )
     ],
     dependencies: [
         .package(
@@ -46,6 +46,6 @@ let package = Package(
             name: "PokemonList",
             dependencies: ["Domain"],
             path: "Sources/Presentation/Modules/PokemonList"
-        ),
+        )
     ]
 )
