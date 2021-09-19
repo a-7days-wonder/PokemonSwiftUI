@@ -18,3 +18,16 @@ targets:
       base:
         INFOPLIST_FILE: PokemonSwiftUI/Application/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: com.shumpei.nagata.PokemonSwiftUI
+    preBuildScripts:
+      - script: |
+          source ~/.zshrc
+          # NOTE: Apple Silicon Macでのインストール先なので、Intel Macだとダメかも
+          if which /opt/homebrew/bin/mint > /dev/null; then
+            xcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint autocorrect --format
+            xcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint
+          else
+            echo "warning: SwiftLint is not installed. Please install SwiftLint with Mint."
+          fi
+        name: SwiftLint
+    dependencies:
+      - framework: Carthage/Build/Alamofire.xcframework
