@@ -9,8 +9,8 @@ public struct PokemonListView: View {
     }
 
     public var body: some View {
-        List(viewModel.pokemons, id: \.url) { pokemon in
-            Text(pokemon.name)
+        List(viewModel.pokemons, id: \.number) { pokemon in
+            PokemonListCell(thumbnailUrl: pokemon.thumbnailUrl, name: pokemon.name)
         }.task {
             await viewModel.fetchPokemons()
         }.refreshable {
