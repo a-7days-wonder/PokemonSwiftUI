@@ -1,19 +1,20 @@
-enum PokemonListViewModelProvider {
-    static func provide() -> PokemonListViewModelContract {
-        PokemonListViewModel(pokemonListUseCase: PokemonListUseCaseProvider.provide())
-    }
-}
+import Combine
 
-protocol PokemonListViewModelContract {
-}
-
-struct PokemonListViewModel {
+@MainActor
+final class PokemonListViewModel: ObservableObject {
     private let pokemonListUseCase: PokemonListUseCaseContract
+
+    @Published private(set) var pokemons = [Pokemon]()
 
     init(pokemonListUseCase: PokemonListUseCaseContract) {
         self.pokemonListUseCase = pokemonListUseCase
     }
-}
 
-extension PokemonListViewModel: PokemonListViewModelContract {
+    func fetchPokemons() async {
+        do {
+            pokemons = try await pokemonListUseCase.fetch().pokemons
+        } catch {
+            debugPrint(error)
+        }
+    }
 }

@@ -13,6 +13,10 @@ protocol ApiRequestable {
 }
 
 extension ApiRequestable {
+    var baseURL: URL {
+        .init(string: "https://pokeapi.co/api/v2/")!
+    }
+
     var headers: Alamofire.HTTPHeaders {
         .init()
     }
@@ -28,7 +32,7 @@ extension ApiRequestable {
             return Alamofire.JSONEncoding.default
         }
     }
-    
+
     var url: URL {
         baseURL.appendingPathComponent(path)
     }

@@ -1,19 +1,25 @@
 import SwiftUI
 
 struct PokemonListView: View {
-    private let viewModel: PokemonListViewModelContract
+    @StateObject var viewModel: PokemonListViewModel
 
-    init(viewModel: PokemonListViewModelContract) {
-        self.viewModel = viewModel
+    init(viewModel: PokemonListViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        List(viewModel.pokemons, id: \.url) { pokemon in
+            Text(pokemon.name)
+        }.task {
+            await viewModel.fetchPokemons()
+        }.refreshable {
+            await viewModel.fetchPokemons()
+        }
     }
 }
 
 struct PokemonListView_Previews: PreviewProvider {
     static var previews: some View {
-        PokemonListView(viewModel: PokemonListViewModelProvider.provide())
+        PokemonListView(viewModel: PokemonListViewModel(pokemonListUseCase: PokemonListUseCaseProvider.provide()))
     }
 }
