@@ -46,6 +46,11 @@ let package = Package(
             name: "PokemonList",
             dependencies: ["Domain"],
             path: "Sources/Presentation/Modules/PokemonList"
+        ),
+        .target(
+            name: "WebView",
+            dependencies: [],
+            path: "Sources/Presentation/Modules/WebView"
         )
     ]
 )
