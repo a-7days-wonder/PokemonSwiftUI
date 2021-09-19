@@ -91,6 +91,3 @@ iOSInjectionProject/
 
 # Homebrew
 Brewfile.lock.json
-
-# XcodeGen
-*.xcodeproj
