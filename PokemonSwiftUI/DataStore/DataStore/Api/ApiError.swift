@@ -1,7 +1,5 @@
 enum ApiError: Error {
     case connection
-    case buildingRequestFailed
-    case requestFailed
     case network
     case server(ServerError)
     case decodingFailure

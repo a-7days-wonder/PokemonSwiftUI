@@ -28,15 +28,8 @@ extension ApiRequestable {
             return Alamofire.JSONEncoding.default
         }
     }
-
-    func toUrlRequest() -> URLRequest? {
-        guard let request = try? URLRequest(
-            url: baseURL.appendingPathComponent(path),
-            method: method,
-            headers: headers
-        ) else {
-            return nil
-        }
-        return try? encoding.encode(request, with: parameters)
+    
+    var url: URL {
+        baseURL.appendingPathComponent(path)
     }
 }

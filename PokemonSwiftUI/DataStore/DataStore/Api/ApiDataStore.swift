@@ -3,23 +3,27 @@ import Foundation
 
 enum ApiDataStoreProvider {
     static func provide() -> ApiDataStoreContract {
-        ApiDataStore()
+        ApiDataStore(
+            reachabilityDataStore: ReachabilityDataStoreProvider.provide(),
+            session: Alamofire.AF,
+            decoder: .default
+        )
     }
 }
 
 protocol ApiDataStoreContract {
-    func call<T: ApiRequestable>(_ request: T) async -> Result<T.Response, ApiError>
+    func call<T: ApiRequestable>(_ request: T) async throws -> T.Response
 }
 
 struct ApiDataStore {
     private let reachabilityDataStore: ReachabilityDataStore
-    private let session: URLSession
+    private let session: Alamofire.Session
     private let decoder: JSONDecoder
 
     init(
-        reachabilityDataStore: ReachabilityDataStore = ReachabilityDataStoreProvider.provide(),
-        session: URLSession = .shared,
-        decoder: JSONDecoder = .default
+        reachabilityDataStore: ReachabilityDataStore,
+        session: Alamofire.Session,
+        decoder: JSONDecoder
     ) {
         self.reachabilityDataStore = reachabilityDataStore
         self.session = session
@@ -29,48 +33,39 @@ struct ApiDataStore {
     private var isReachable: Bool {
         reachabilityDataStore.isReachable
     }
-
-    private func validate(response: URLResponse) -> ApiError? {
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-            return .network
-        }
-
-        guard (200..<300).contains(statusCode) else {
-            if (400..<500).contains(statusCode) {
-                return .server(.client)
-            } else if (500..<600).contains(statusCode) {
-                return .server(.server)
-            } else {
-                return .server(.other(statusCode: statusCode))
-            }
-        }
-
-        return nil
-    }
 }
 
 extension ApiDataStore: ApiDataStoreContract {
-    func call<T>(_ request: T) async -> Result<T.Response, ApiError> where T: ApiRequestable {
+    func call<T: ApiRequestable>(_ request: T) async throws -> T.Response {
         guard isReachable else {
-            return .failure(.connection)
+            throw ApiError.connection
         }
 
-        guard let urlRequest = request.toUrlRequest() else {
-            return .failure(.buildingRequestFailed)
-        }
+        return try await withCheckedThrowingContinuation { continuation in
+            session.request(
+                request.url,
+                method: request.method,
+                parameters: request.parameters,
+                encoding: request.encoding,
+                headers: request.headers
+            ).validate(statusCode: 200..<300).responseData { response in
+                if response.response?.statusCode == 204,
+                   let noContents = NoContents() as? T.Response {
+                    continuation.resume(returning: noContents)
+                }
 
-        guard let (data, response) = try? await session.data(for: urlRequest) else {
-            return .failure(.requestFailed)
+                switch response.result {
+                case let .success(data):
+                    do {
+                        let success = try decoder.decode(T.Response.self, from: data)
+                        continuation.resume(returning: success)
+                    } catch {
+                        continuation.resume(throwing: ApiError.decodingFailure)
+                    }
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
         }
-
-        if let error = validate(response: response) {
-            return .failure(error)
-        }
-
-        guard let success = try? decoder.decode(T.Response.self, from: data) else {
-            return .failure(.decodingFailure)
-        }
-
-        return .success(success)
     }
 }
