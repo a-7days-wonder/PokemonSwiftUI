@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AppRootView: View {
     var body: some View {
-        PokemonListView()
+        PokemonListView(viewModel: PokemonListViewModelProvider.provide())
     }
 }
 

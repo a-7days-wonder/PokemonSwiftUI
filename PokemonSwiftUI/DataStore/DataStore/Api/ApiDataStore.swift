@@ -1,11 +1,17 @@
 import Alamofire
 import Foundation
 
-protocol ApiDataStore {
+enum ApiDataStoreProvider {
+    static func provide() -> ApiDataStoreContract {
+        ApiDataStore()
+    }
+}
+
+protocol ApiDataStoreContract {
     func call<T: ApiRequestable>(_ request: T) async -> Result<T.Response, ApiError>
 }
 
-struct ApiDataStoreImpl {
+struct ApiDataStore {
     private let reachabilityDataStore: ReachabilityDataStore
     private let session: URLSession
     private let decoder: JSONDecoder
@@ -43,7 +49,7 @@ struct ApiDataStoreImpl {
     }
 }
 
-extension ApiDataStoreImpl: ApiDataStore {
+extension ApiDataStore: ApiDataStoreContract {
     func call<T>(_ request: T) async -> Result<T.Response, ApiError> where T: ApiRequestable {
         guard isReachable else {
             return .failure(.connection)
