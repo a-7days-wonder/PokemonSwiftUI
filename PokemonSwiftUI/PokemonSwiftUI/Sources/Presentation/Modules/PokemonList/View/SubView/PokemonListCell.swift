@@ -2,11 +2,13 @@ import Foundation
 import SwiftUI
 
 struct PokemonListCell: View {
+    let number: Int
     let thumbnailUrl: URL?
     let name: String
 
     var body: some View {
         HStack {
+            Text(String(number))
             AsyncImage(url: thumbnailUrl) { image in
                 image.resizable().scaledToFit()
             } placeholder: {
@@ -16,13 +18,12 @@ struct PokemonListCell: View {
             .padding(8)
 
             Text(name)
-                .font(.body)
         }
     }
 }
 
 struct PokemonListCell_Previews: PreviewProvider {
     static var previews: some View {
-        PokemonListCell(thumbnailUrl: nil, name: "カイオーガ")
+        PokemonListCell(number: 0, thumbnailUrl: nil, name: "カイオーガ")
     }
 }

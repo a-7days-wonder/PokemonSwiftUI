@@ -5,7 +5,7 @@ public enum PokemonListRepositoryProvider {
 }
 
 public protocol PokemonListRepositoryContract {
-    func fetch() async throws -> PokemonListApiResponse
+    func fetch(offset: Int, limit: Int) async throws -> PokemonListApiResponse
 }
 
 struct PokemonListRepository {
@@ -17,7 +17,7 @@ struct PokemonListRepository {
 }
 
 extension PokemonListRepository: PokemonListRepositoryContract {
-    func fetch() async throws -> PokemonListApiResponse {
-        try await apiDataStore.call(PokemonListApiRequest())
+    func fetch(offset: Int, limit: Int) async throws -> PokemonListApiResponse {
+        try await apiDataStore.call(PokemonListApiRequest(offset: offset, limit: limit))
     }
 }

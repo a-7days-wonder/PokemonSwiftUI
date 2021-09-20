@@ -5,7 +5,11 @@ import Domain
 public final class PokemonListViewModel: ObservableObject {
     private let pokemonListUseCase: PokemonListUseCaseContract
 
+    private var count = 0
     @Published private(set) var pokemons = [Pokemon]()
+    var canFetchMore: Bool {
+        pokemons.count < count
+    }
 
     public init(pokemonListUseCase: PokemonListUseCaseContract) {
         self.pokemonListUseCase = pokemonListUseCase
@@ -13,7 +17,18 @@ public final class PokemonListViewModel: ObservableObject {
 
     func fetchPokemons() async {
         do {
-            pokemons = try await pokemonListUseCase.fetch().pokemons
+            let result = try await pokemonListUseCase.fetch(offset: 0)
+            pokemons = result.pokemons
+            count = result.count
+        } catch {
+            debugPrint(error)
+        }
+    }
+
+    func fetchMore() async {
+        do {
+            let result = try await pokemonListUseCase.fetch(offset: pokemons.count)
+            pokemons.append(contentsOf: result.pokemons)
         } catch {
             debugPrint(error)
         }

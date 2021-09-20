@@ -10,4 +10,13 @@ struct PokemonListApiRequest: ApiRequestable {
     var path: String {
         "pokemon"
     }
+
+    var parameters: Parameters
+
+    init(offset: Int, limit: Int) {
+        parameters = [
+            "offset": offset,
+            "limit": limit
+        ]
+    }
 }

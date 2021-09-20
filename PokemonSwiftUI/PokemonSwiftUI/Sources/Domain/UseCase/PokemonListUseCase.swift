@@ -7,7 +7,7 @@ public enum PokemonListUseCaseProvider {
 }
 
 public protocol PokemonListUseCaseContract {
-    func fetch() async throws -> PokemonList
+    func fetch(offset: Int) async throws -> PokemonList
 }
 
 struct PokemonListUseCase {
@@ -19,8 +19,8 @@ struct PokemonListUseCase {
 }
 
 extension PokemonListUseCase: PokemonListUseCaseContract {
-    func fetch() async throws -> PokemonList {
-        let response = try await pokemonListRepository.fetch()
+    func fetch(offset: Int) async throws -> PokemonList {
+        let response = try await pokemonListRepository.fetch(offset: offset, limit: 20)
         return .init(from: response)
     }
 }

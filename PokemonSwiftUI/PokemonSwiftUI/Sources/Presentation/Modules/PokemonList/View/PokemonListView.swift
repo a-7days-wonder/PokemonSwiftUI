@@ -9,11 +9,23 @@ public struct PokemonListView: View {
     }
 
     public var body: some View {
-        List(viewModel.pokemons, id: \.number) { pokemon in
-            PokemonListCell(thumbnailUrl: pokemon.thumbnailUrl, name: pokemon.name)
+        ScrollView {
+            LazyVStack {
+                ForEach(viewModel.pokemons, id: \.number) { pokemon in
+                    PokemonListCell(
+                        number: pokemon.number,
+                        thumbnailUrl: pokemon.thumbnailUrl,
+                        name: pokemon.name
+                    )
+                }
+                if viewModel.canFetchMore {
+                    ProgressView()
+                        .task {
+                            await viewModel.fetchMore()
+                        }
+                }
+            }
         }.task {
-            await viewModel.fetchPokemons()
-        }.refreshable {
             await viewModel.fetchPokemons()
         }
     }
