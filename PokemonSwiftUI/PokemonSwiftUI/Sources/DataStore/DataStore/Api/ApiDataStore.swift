@@ -12,7 +12,7 @@ enum ApiDataStoreProvider {
 }
 
 protocol ApiDataStoreContract {
-    func call<T: ApiRequestable>(_ request: T) async throws -> T.Response
+    func call<Request: ApiRequestable>(_ request: Request) async throws -> Request.Response
 }
 
 struct ApiDataStore {
@@ -36,7 +36,7 @@ struct ApiDataStore {
 }
 
 extension ApiDataStore: ApiDataStoreContract {
-    func call<T: ApiRequestable>(_ request: T) async throws -> T.Response {
+    func call<Request: ApiRequestable>(_ request: Request) async throws -> Request.Response {
         guard isReachable else {
             throw ApiError.connection
         }
@@ -50,14 +50,14 @@ extension ApiDataStore: ApiDataStoreContract {
                 headers: request.headers
             ).validate(statusCode: 200..<300).responseData { response in
                 if response.response?.statusCode == 204,
-                   let noContents = NoContents() as? T.Response {
+                   let noContents = NoContents() as? Request.Response {
                     continuation.resume(returning: noContents)
                 }
 
                 switch response.result {
                 case let .success(data):
                     do {
-                        let success = try decoder.decode(T.Response.self, from: data)
+                        let success = try decoder.decode(Request.Response.self, from: data)
                         continuation.resume(returning: success)
                     } catch {
                         continuation.resume(throwing: ApiError.decodingFailure)
