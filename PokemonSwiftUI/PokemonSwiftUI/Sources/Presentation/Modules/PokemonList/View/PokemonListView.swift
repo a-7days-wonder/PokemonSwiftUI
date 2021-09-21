@@ -1,4 +1,5 @@
 import Domain
+import PokemonDetail
 import SwiftUI
 
 public struct PokemonListView: View {
@@ -13,11 +14,16 @@ public struct PokemonListView: View {
             ScrollView {
                 LazyVStack {
                     ForEach(viewModel.pokemons, id: \.number) { pokemon in
-                        PokemonListCell(
-                            number: pokemon.number,
-                            thumbnailUrl: pokemon.thumbnailUrl,
-                            name: pokemon.name
-                        ).frame(height: 100)
+                        NavigationLink {
+                            buildPokemonDetailView()
+                        } label: {
+                            PokemonListCell(
+                                number: pokemon.number,
+                                thumbnailUrl: pokemon.thumbnailUrl,
+                                name: pokemon.name
+                            ).frame(height: 100)
+                            .foregroundColor(.black)
+                        }
                     }
                     if viewModel.canFetchMore {
                         ProgressView().task {
@@ -29,6 +35,14 @@ public struct PokemonListView: View {
                 await viewModel.fetchPokemons()
             }.navigationTitle("Pokemon List")
         }
+    }
+}
+
+extension PokemonListView {
+    func buildPokemonDetailView() -> PokemonDetailView {
+        let useCase = PokemonDetailUseCaseProvider.provide()
+        let viewModel = PokemonDetailViewModel(pokemonDetailUseCase: useCase)
+        return .init(viewModel: viewModel)
     }
 }
 

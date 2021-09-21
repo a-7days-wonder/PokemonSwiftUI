@@ -43,8 +43,16 @@ let package = Package(
             path: "Sources/Presentation/Modules/AppRoot"
         ),
         .target(
-            name: "PokemonList",
+            name: "PokemonDetail",
             dependencies: ["Domain"],
+            path: "Sources/Presentation/Modules/PokemonDetail"
+        ),
+        .target(
+            name: "PokemonList",
+            dependencies: [
+                "Domain",
+                "PokemonDetail"
+            ],
             path: "Sources/Presentation/Modules/PokemonList"
         ),
         .target(
