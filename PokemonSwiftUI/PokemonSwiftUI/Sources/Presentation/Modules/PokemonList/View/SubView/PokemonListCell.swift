@@ -7,23 +7,33 @@ struct PokemonListCell: View {
     let name: String
 
     var body: some View {
-        HStack {
-            Text(String(number))
-            AsyncImage(url: thumbnailUrl) { image in
-                image.resizable().scaledToFit()
-            } placeholder: {
-                ProgressView()
-            }
-            .frame(width: 75, height: 75, alignment: .center)
-            .padding(8)
+        GeometryReader { geometry in
+            HStack(spacing: 8) {
+                Text(String(number))
+                    .frame(width: geometry.size.width / 10)
 
-            Text(name)
+                AsyncImage(url: thumbnailUrl) { image in
+                    image.resizable().scaledToFit()
+                } placeholder: {
+                    ProgressView()
+                }.frame(
+                    width: geometry.size.height,
+                    height: geometry.size.height,
+                    alignment: .center
+                ).padding(8)
+
+                Text(name)
+            }.padding(8)
         }
     }
 }
 
 struct PokemonListCell_Previews: PreviewProvider {
     static var previews: some View {
-        PokemonListCell(number: 0, thumbnailUrl: nil, name: "カイオーガ")
+        PokemonListCell(
+            number: 0,
+            thumbnailUrl: nil,
+            name: "カイオーガ"
+        ).previewLayout(.fixed(width: 375, height: 100))
     }
 }

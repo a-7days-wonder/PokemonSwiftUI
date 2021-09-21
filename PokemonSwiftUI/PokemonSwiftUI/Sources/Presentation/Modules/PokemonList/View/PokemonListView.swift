@@ -16,7 +16,7 @@ public struct PokemonListView: View {
                         number: pokemon.number,
                         thumbnailUrl: pokemon.thumbnailUrl,
                         name: pokemon.name
-                    )
+                    ).frame(height: 100)
                 }
                 if viewModel.canFetchMore {
                     ProgressView()
