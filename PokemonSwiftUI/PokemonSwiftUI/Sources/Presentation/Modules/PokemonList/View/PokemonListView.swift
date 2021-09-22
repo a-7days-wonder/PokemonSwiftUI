@@ -2,20 +2,20 @@ import Domain
 import PokemonDetail
 import SwiftUI
 
-public struct PokemonListView: View {
+struct PokemonListView: View {
     @StateObject var viewModel: PokemonListViewModel
 
-    public init(viewModel: PokemonListViewModel) {
+    init(viewModel: PokemonListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
-    public var body: some View {
+    var body: some View {
         NavigationView {
             ScrollView {
                 LazyVStack {
                     ForEach(viewModel.pokemons, id: \.number) { pokemon in
                         NavigationLink {
-                            buildPokemonDetailView()
+                            PokemonDetailBuilder.build()
                         } label: {
                             PokemonListCell(
                                 number: pokemon.number,
@@ -35,14 +35,6 @@ public struct PokemonListView: View {
                 await viewModel.fetchPokemons()
             }.navigationTitle("Pokemon List")
         }
-    }
-}
-
-extension PokemonListView {
-    func buildPokemonDetailView() -> PokemonDetailView {
-        let useCase = PokemonDetailUseCaseProvider.provide()
-        let viewModel = PokemonDetailViewModel(pokemonDetailUseCase: useCase)
-        return .init(viewModel: viewModel)
     }
 }
 

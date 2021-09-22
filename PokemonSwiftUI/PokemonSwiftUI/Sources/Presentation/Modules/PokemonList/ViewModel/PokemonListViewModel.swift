@@ -2,7 +2,7 @@ import Combine
 import Domain
 
 @MainActor
-public final class PokemonListViewModel: ObservableObject {
+final class PokemonListViewModel: ObservableObject {
     private let pokemonListUseCase: PokemonListUseCaseContract
 
     private var count = 0
@@ -11,7 +11,7 @@ public final class PokemonListViewModel: ObservableObject {
         pokemons.count < count
     }
 
-    public init(pokemonListUseCase: PokemonListUseCaseContract) {
+    init(pokemonListUseCase: PokemonListUseCaseContract) {
         self.pokemonListUseCase = pokemonListUseCase
     }
 

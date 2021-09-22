@@ -1,14 +1,14 @@
 import Domain
 import SwiftUI
 
-public struct PokemonDetailView: View {
+struct PokemonDetailView: View {
     @StateObject private var viewModel: PokemonDetailViewModel
 
-    public init(viewModel: PokemonDetailViewModel) {
+    init(viewModel: PokemonDetailViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
-    public var body: some View {
+    var body: some View {
         Text(String(describing: type(of: self)))
     }
 }
