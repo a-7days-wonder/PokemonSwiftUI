@@ -2,10 +2,8 @@ import Domain
 import PokemonList
 import SwiftUI
 
-public struct AppRootView: View {
-    public init() {}
-
-    public var body: some View {
+struct AppRootView: View {
+    var body: some View {
         PokemonListBuilder.build()
     }
 }
