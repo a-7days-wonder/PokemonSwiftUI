@@ -160,7 +160,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/zsh;
-			shellScript = "source ~/.zshrc\n# NOTE: Apple Silicon Macでのインストール先なので、Intel Macだとダメかも\nif which /opt/homebrew/bin/mint > /dev/null; then\n  xcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint autocorrect --format\n  xcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint\nelse\n  echo \"warning: SwiftLint is not installed. Please install SwiftLint with Mint.\"\nfi\n";
+			shellScript = "if which /opt/homebrew/bin/mint > /dev/null; then\n  xcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint autocorrect --format\n  xcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint\nelse\n  echo \"warning: SwiftLint is not installed. Please install SwiftLint with Mint.\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
