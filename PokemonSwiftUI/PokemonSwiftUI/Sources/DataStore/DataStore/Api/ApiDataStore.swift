@@ -13,12 +13,14 @@ enum ApiDataStoreProvider {
 
 protocol ApiDataStoreContract {
     func call<Request: ApiRequestable>(_ request: Request) async throws -> Request.Response
+    func cancel()
 }
 
-struct ApiDataStore {
+final class ApiDataStore {
     private let reachabilityDataStore: ReachabilityDataStore
     private let session: Alamofire.Session
     private let decoder: JSONDecoder
+    private var dataRequest: Alamofire.DataRequest?
 
     init(
         reachabilityDataStore: ReachabilityDataStore,
@@ -42,13 +44,17 @@ extension ApiDataStore: ApiDataStoreContract {
         }
 
         return try await withCheckedThrowingContinuation { continuation in
-            session.request(
+            self.dataRequest = session.request(
                 request.url,
                 method: request.method,
                 parameters: request.parameters,
                 encoding: request.encoding,
                 headers: request.headers
-            ).validate(statusCode: 200..<300).responseData { response in
+            ).validate(statusCode: 200..<300).responseData { [weak self] response in
+                guard let self = self else {
+                    return
+                }
+
                 if response.response?.statusCode == 204,
                    let noContents = NoContents() as? Request.Response {
                     continuation.resume(returning: noContents)
@@ -57,7 +63,7 @@ extension ApiDataStore: ApiDataStoreContract {
                 switch response.result {
                 case let .success(data):
                     do {
-                        let success = try decoder.decode(Request.Response.self, from: data)
+                        let success = try self.decoder.decode(Request.Response.self, from: data)
                         continuation.resume(returning: success)
                     } catch {
                         continuation.resume(throwing: ApiError.decodingFailure)
@@ -67,5 +73,9 @@ extension ApiDataStore: ApiDataStoreContract {
                 }
             }
         }
+    }
+
+    func cancel() {
+        dataRequest?.cancel()
     }
 }
